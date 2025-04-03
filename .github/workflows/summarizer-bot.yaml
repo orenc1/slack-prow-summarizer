@@ -1,7 +1,7 @@
 name: Prow Summarizer Bot
 on:
   schedule:
-    - cron: '0 9 * * *'
+    - cron: '0 9 */3 * *'
   workflow_dispatch:
 jobs:
   override:

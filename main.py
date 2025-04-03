@@ -10,7 +10,7 @@ from slack_sdk import WebClient
 from jobs import get_periodic_jobs
 
 TESTS_PREFIX = "https://gcsweb-ci.apps.ci.l2s4.p1.openshiftapps.com/gcs/test-platform-results/logs/"
-DELTA_TIME_HOURS = os.getenv("DELTA_TIME_HOURS", 24)
+DELTA_TIME_HOURS = os.getenv("DELTA_TIME_HOURS", 74)
 
 versions = []
 platforms = [
