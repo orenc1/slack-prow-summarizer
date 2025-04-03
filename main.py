@@ -223,7 +223,7 @@ def post_on_slack():
 
     sum_results = get_summary_results()
     summary_per_v = get_summary_per_version(sum_results)
-    title = f"HyperShift-KubeVirt periodics summary: {sum_results["total_passed"]} out of {sum_results["total"]} jobs passed in total. Details per version: {summary_per_v}"
+    title = f"HyperShift-KubeVirt periodics summary of the last {str(DELTA_TIME_HOURS)} hours: {sum_results["total_passed"]} out of {sum_results["total"]} jobs passed in total. Details per version: {summary_per_v}"
 
     response = client.chat_postMessage(
         channel=channel_id,
