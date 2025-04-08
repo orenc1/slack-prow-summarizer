@@ -10,7 +10,7 @@ from slack_sdk import WebClient
 from jobs import get_periodic_jobs
 
 TESTS_PREFIX = "https://gcsweb-ci.apps.ci.l2s4.p1.openshiftapps.com/gcs/test-platform-results/logs/"
-DELTA_TIME_HOURS = os.getenv("DELTA_TIME_HOURS", 74)
+DELTA_TIME_HOURS = os.getenv("DELTA_TIME_HOURS", 72)
 
 versions = []
 platforms = [
@@ -116,23 +116,23 @@ def organize_data():
 
 def build_blocks():
     blocks = {
-        "blocks": [
-            {
-                "type": "rich_text",
-                "elements": []
-            }
-        ]
+        "blocks": []
     }
 
     for version in jobs_map:
-        blocks["blocks"][0]["elements"].append(rtl(version, 0))
+        subblock = {
+            "type": "rich_text",
+            "elements": []
+        }
+        subblock["elements"].append(rtl(version, 0))
         for platform in jobs_map[version]:
-            blocks["blocks"][0]["elements"].append(rtl(platform, 1, bold=True))
+            subblock["elements"].append(rtl(platform, 1, bold=True))
             for variant in jobs_map[version][platform]:
-                blocks["blocks"][0]["elements"].append(rtl(f"{variant}: ", 2))
-                add_results_sections(blocks["blocks"][0]["elements"][-1]["elements"][0]["elements"], jobs_map[version][platform][variant])
+                subblock["elements"].append(rtl(f"{variant}: ", 2))
+                add_results_sections(subblock["elements"][-1]["elements"][0]["elements"], jobs_map[version][platform][variant])
+        blocks["blocks"].append(subblock)
 
-    return blocks["blocks"]
+    return blocks
 
 
 def add_results_sections(rtl_block, executions):
@@ -232,12 +232,13 @@ def post_on_slack():
     message_ts = response['ts']
     blocks = build_blocks()
 
-    detailed_results_response = client.chat_postMessage(
-        channel=channel_id,
-        thread_ts=message_ts,
-        text="details:",
-        blocks=blocks,
-    )
+    for block in blocks["blocks"]:
+        client.chat_postMessage(
+            channel=channel_id,
+            thread_ts=message_ts,
+            text="details",
+            blocks=[block],
+        )
 
 
 def get_summary_results():
