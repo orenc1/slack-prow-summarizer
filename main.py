@@ -83,7 +83,11 @@ def collect_data():
                 job_id = el.tail.strip()
 
                 prowjob_response = requests.get(TESTS_PREFIX + pj.full_name + '/' + job_id + "prowjob.json").text
-                prowjob = json.loads(prowjob_response)
+                try:
+                    prowjob = json.loads(prowjob_response)
+                except Exception:
+                    print(f"Error: {TESTS_PREFIX + pj.full_name + '/' + job_id + "prowjob.json"} is not a json. Skipping entry")
+                    continue
                 if "completionTime" not in prowjob["status"]:
                     continue
                 timestamp = prowjob["status"]["completionTime"]
