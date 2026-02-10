@@ -27,12 +27,12 @@ def get_periodic_jobs():
 
 def clone_repo():
     if not os.path.exists(REPO_PATH):
-        Repo.clone_from(PROW_JOBS_REPO, REPO_PATH, branch="master")
+        Repo.clone_from(PROW_JOBS_REPO, REPO_PATH, branch="main")
 
     jobs_repo = Repo(REPO_PATH)
     for remote in jobs_repo.remotes:
         remote.fetch()
-    jobs_repo.git.checkout('master')
+    jobs_repo.git.checkout('main')
 
 
 def get_periodic_jobs_files(full_jobs_path):
